@@ -4,13 +4,23 @@ import Check from "./Check";
 import { useEffect, useState } from "react";
 
 function App() {
-  const [checkList, setCheckList] = useState([false, false, false]);
+  const [checkList, setCheckList] = useState([
+    { id: 1, status: false },
+    { id: 2, status: false },
+    { id: 3, status: false },
+  ]);
   const [isCheckAll, setIsCheckAll] = useState(false);
 
   const handleSingleCheck = (position) => {
     setCheckList(
-      checkList.map((element, index) => {
-        return index === position ? !element : element;
+      checkList.map(({ id, status }) => {
+        const newElement = {
+          id: id,
+          status: id === position ? !status : status,
+        };
+
+        return newElement;
+        // return index === position ? !element : element;
       })
     );
   };
@@ -19,21 +29,31 @@ function App() {
     setIsCheckAll(!isCheckAll);
 
     if (isCheckAll) {
-      setCheckList(checkList.map(() => false));
+      setCheckList(
+        checkList.map(({ id, status }) => ({ id: id, status: false }))
+      );
     } else {
-      setCheckList(checkList.map(() => true));
+      setCheckList(
+        checkList.map(({ id, status }) => ({ id: id, status: true }))
+      );
     }
   };
 
   useEffect(() => {
-    let newIsCheckAll = true;
-    checkList.forEach((element) => {
-      if (!element) {
-        newIsCheckAll = false;
-      }
-    });
-    newIsCheckAll ? setIsCheckAll(true) : setIsCheckAll(false);
+    console.log(checkList);
   }, [checkList]);
+
+  // useEffect(() => {
+  //   let newIsCheckAll = true;
+  //   checkList.forEach((element) => {
+  //     if (!element) {
+  //       newIsCheckAll = false;
+  //     }
+  //   });
+  //   newIsCheckAll ? setIsCheckAll(true) : setIsCheckAll(false);
+
+  //   console.log(checkList);
+  // }, [checkList]);
 
   //requirement
   //check all -> check all individual
@@ -48,9 +68,9 @@ function App() {
         Check
         {checkList.map((element, index) => (
           <Check
-            key={index}
-            position={index}
-            isCheck={element}
+            key={element.id}
+            position={element.id}
+            isCheck={element.status}
             handleSingleCheck={handleSingleCheck}
           />
         ))}
